@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Progress Bars</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #191919;
+      color: #fff;
+      padding: 20px;
+    }
+    .progress-container {
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+    }
+    .progress-bar {
+      width: 250px; /* fixed bar width */
+      height: 22px;
+      background: transparent;
+      border: 2px solid #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #fff;
+      width: 0%;
+      transition: width 0.5s ease-in-out;
+    }
+    .label {
+      margin-left: 12px;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-container">
+    <div class="progress-bar"><div id="yearBar" class="progress-fill"></div></div>
+    <div class="label">Year <span id="yearPercent"></span></div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar"><div id="monthBar" class="progress-fill"></div></div>
+    <div class="label">Month <span id="monthPercent"></span></div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar"><div id="weekBar" class="progress-fill"></div></div>
+    <div class="label">Week <span id="weekPercent"></span></div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progress-bar"><div id="dayBar" class="progress-fill"></div></div>
+    <div class="label">Day <span id="dayPercent"></span></div>
+  </div>
+
+  <script>
+    function updateProgress() {
+      const now = new Date();
+
+      // Year
+      const startYear = new Date(now.getFullYear(), 0, 1);
+      const endYear = new Date(now.getFullYear() + 1, 0, 1);
+      const yearProgress = ((now - startYear) / (endYear - startYear)) * 100;
+
+      // Month
+      const startMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const endMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      const monthProgress = ((now - startMonth) / (endMonth - startMonth)) * 100;
+
+      // Week (Monday start)
+      const dayOfWeek = (now.getDay() + 6) % 7; 
+      const startWeek = new Date(now);
+      startWeek.setDate(now.getDate() - dayOfWeek);
+      startWeek.setHours(0,0,0,0);
+      const endWeek = new Date(startWeek);
+      endWeek.setDate(startWeek.getDate() + 7);
+      const weekProgress = ((now - startWeek) / (endWeek - startWeek)) * 100;
+
+      // Day
+      const startDay = new Date(now);
+      startDay.setHours(0,0,0,0);
+      const endDay = new Date(startDay);
+      endDay.setDate(startDay.getDate() + 1);
+      const dayProgress = ((now - startDay) / (endDay - startDay)) * 100;
+
+      // Update bars + labels
+      document.getElementById("yearBar").style.width = yearProgress + "%";
+      document.getElementById("yearPercent").innerText = yearProgress.toFixed(1) + "%";
+
+      document.getElementById("monthBar").style.width = monthProgress + "%";
+      document.getElementById("monthPercent").innerText = monthProgress.toFixed(1) + "%";
+
+      document.getElementById("weekBar").style.width = weekProgress + "%";
+      document.getElementById("weekPercent").innerText = weekProgress.toFixed(1) + "%";
+
+      document.getElementById("dayBar").style.width = dayProgress + "%";
+      document.getElementById("dayPercent").innerText = dayProgress.toFixed(1) + "%";
+    }
+
+    updateProgress();
+    setInterval(updateProgress, 60000); // refresh every minute
+  </script>
+</body>
+</html>
